@@ -9,7 +9,7 @@ app = Flask(__name__)
 model = pickle.load(open("chatbot_train.pkl", "rb"))
 vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
-nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('stopwords')
 stop_words = nltk.corpus.stopwords.words('english')
 

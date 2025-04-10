@@ -8,7 +8,7 @@ from sklearn.linear_model import LogisticRegression
 from nltk.corpus import stopwords
 
 print("🔁 Downloading NLTK resources...")
-nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 print("📂 Loading dataset...")
