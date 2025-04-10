@@ -6,7 +6,7 @@ import string
 app = Flask(__name__)
 
 # Load model and vectorizer
-model = pickle.load(open("chatbot_train.pkl", "rb"))
+model = pickle.load(open("chatbot_model.pkl", "rb"))
 vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
 nltk.download('punkt_tab')
