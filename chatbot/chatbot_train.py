@@ -12,7 +12,7 @@ nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 print("📂 Loading dataset...")
-df = pd.read_csv("C:\Users\krush\Desktop\Internship\FUTURE_ML_03\chatbot\Dataset\customer_support_tickets.csv")
+df = pd.read_csv(r"C:\Users\krush\Desktop\Internship\FUTURE_ML_03\chatbot\Dataset\customer_support_tickets.csv")
 df = df.dropna(subset=['Ticket Description', 'Resolution'])
 df = df.head(500)  # for testing
 

@@ -1,16 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Customer Support Chatbot</title>
+    <title>Support Chatbot</title>
+    <style>
+        body { font-family: Arial; margin: 50px; background: #f7f7f7; }
+        #chatbox { width: 100%; padding: 10px; margin-top: 10px; }
+        #messages { border: 1px solid #ccc; padding: 10px; background: white; min-height: 200px; }
+        .msg { margin: 5px 0; }
+        .user { color: blue; }
+        .bot { color: green; }
+    </style>
 </head>
 <body>
     <h2>Customer Support Chatbot</h2>
-    <form method="POST" action="/get">
-        <input type="text" name="user_input" placeholder="Ask your question..." required>
-        <button type="submit">Ask</button>
-    </form>
-    {% if request.method == 'POST' %}
-        <h4><b>Bot:</b> {{ response }}</h4>
-    {% endif %}
+    <div id="messages"></div>
+    <input type="text" id="chatbox" placeholder="Ask your question here..." />
+    <button onclick="sendMsg()">Chat</button>
+
+    <h4>Suggestions:</h4>
+    <ul>
+        <li onclick="autoSuggest(this)">How do I reset my password?</li>
+        <li onclick="autoSuggest(this)">What is the refund policy?</li>
+        <li onclick="autoSuggest(this)">How to contact support?</li>
+    </ul>
+
+    <script>
+        function autoSuggest(el) {
+            document.getElementById("chatbox").value = el.innerText;
+        }
+
+        function sendMsg() {
+            const userText = document.getElementById("chatbox").value;
+            if (!userText.trim()) return;
+
+            const messages = document.getElementById("messages");
+            messages.innerHTML += `<div class='msg user'>You: ${userText}</div>`;
+
+            fetch('/get', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'msg=' + encodeURIComponent(userText)
+            })
+            .then(response => response.json())
+            .then(data => {
+                messages.innerHTML += `<div class='msg bot'>Bot: ${data.response}</div>`;
+                document.getElementById("chatbox").value = '';
+            });
+        }
+    </script>
 </body>
 </html>
