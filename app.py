@@ -1,64 +1,35 @@
-from flask import Flask, render_template, request # type: ignore
-import random
-import json
+from flask import Flask, render_template, request
 import pickle
-import numpy as np
-from tensorflow.keras.models import load_model
-from nltk.stem import WordNetLemmatizer
 import nltk
-
-lemmatizer = WordNetLemmatizer()
-model = load_model('chatbot_model.h5')
-intents = json.loads(open('data.json').read())
-words = pickle.load(open('words.pkl', 'rb'))
-classes = pickle.load(open('classes.pkl', 'rb'))
-
+import string
+ 
 app = Flask(__name__)
 
-def clean_up_sentence(sentence):
-    sentence_words = nltk.word_tokenize(sentence)
-    sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
-    return sentence_words
+# Load model and vectorizer
+model = pickle.load(open("chatbot_train.pkl", "rb"))
+vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
-def bag_of_words(sentence):
-    sentence_words = clean_up_sentence(sentence)
-    bag = [0] * len(words)
-    for s in sentence_words:
-        for i, w in enumerate(words):
-            if w == s:
-                bag[i] = 1
-    return np.array(bag)
+nltk.download('punkt')
+nltk.download('stopwords')
+stop_words = nltk.corpus.stopwords.words('english')
 
-def predict_class(sentence):
-    bow = bag_of_words(sentence)
-    res = model.predict(np.array([bow]))[0]
-    ERROR_THRESHOLD = 0.25
-    results = [[i, r] for i, r in enumerate(res) if r > ERROR_THRESHOLD]
-
-    results.sort(key=lambda x: x[1], reverse=True)
-    return_list = []
-    for r in results:
-        return_list.append({'intent': classes[r[0]], 'probability': str(r[1])})
-    return return_list
-
-def get_response(ints, intents_json):
-    if len(ints) == 0:
-        return "Sorry, I didn't understand that."
-    tag = ints[0]['intent']
-    for i in intents_json['intents']:
-        if i['tag'] == tag:
-            return random.choice(i['responses'])
+def preprocess(text):
+    text = text.lower()
+    text = ''.join([c for c in text if c not in string.punctuation])
+    tokens = nltk.word_tokenize(text)
+    return ' '.join([word for word in tokens if word not in stop_words])
 
 @app.route("/")
-def home():
+def index():
     return render_template("index.html")
 
-@app.route("/get", methods=["GET", "POST"])
-def chatbot_response():
-    msg = request.args.get("msg")
-    ints = predict_class(msg)
-    res = get_response(ints, intents)
-    return res
+@app.route("/get", methods=["POST"])
+def get_bot_response():
+    user_input = request.form["user_input"]
+    cleaned_input = preprocess(user_input)
+    vector_input = vectorizer.transform([cleaned_input])
+    response = model.predict(vector_input)[0]
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Support Chatbot</title>
+</head>
+<body>
+    <h2>Customer Support Chatbot</h2>
+    <form method="POST" action="/get">
+        <input type="text" name="user_input" placeholder="Ask your question..." required>
+        <button type="submit">Ask</button>
+    </form>
+    {% if request.method == 'POST' %}
+        <h4><b>Bot:</b> {{ response }}</h4>
+    {% endif %}
+</body>
+</html>
