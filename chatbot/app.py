@@ -1,15 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 import joblib
-import pandas as pd 
-import nltk
-import string
-import pickle
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression 
+import pandas as pd  
 
 
 # Load trained chatbot model
-model = joblib.load("chatbot_train.pkl")
+model = joblib.load(r"C:\Users\krush\Desktop\Internship\FUTURE_ML_03\chatbot\chatbot_model.pkl")
 
 app = Flask(__name__)
 
