@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
-import joblib
-import pandas as pd  
+import pandas as pd
 
+from chatbot_train import model
 
 # Load trained chatbot model
 model = joblib.load(r"C:\Users\krush\Desktop\Internship\FUTURE_ML_03\chatbot\chatbot_model.pkl")
