@@ -3,8 +3,8 @@ import random
 import json
 import pickle
 import numpy as np
-from tensorflow.keras.models import load_model
-from nltk.stem import WordNetLemmatizer
+from tensorflow.keras.models import load_model  #type: ignore[import]
+from nltk.stem import WordNetLemmatizer 
 import nltk
 
 lemmatizer = WordNetLemmatizer()

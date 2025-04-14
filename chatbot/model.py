@@ -3,9 +3,9 @@ import random
 import numpy as np
 import nltk
 from nltk.stem import WordNetLemmatizer
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.models import Sequential #type: ignore[import]
+from tensorflow.keras.layers import Dense, Dropout  #type: ignore[import]
+from tensorflow.keras.optimizers import SGD  #type: ignore[import]
 import pickle
 
 nltk.download("punkt")
