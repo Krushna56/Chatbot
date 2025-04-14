@@ -3,48 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Support Chatbot</title>
+  <title>Chatbot</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
   <div class="chat-container">
-    <div class="chat-box" id="chat-box"></div>
+    <div id="chatbox">
+      <div id="chat-messages"></div>
+      <input type="text" id="user-input" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
     <div class="suggestions">
       <button onclick="setQuickMessage('How can I reset my password?')">Reset Password</button>
       <button onclick="setQuickMessage('I have a billing issue')">Billing Issue</button>
       <button onclick="setQuickMessage('My order is delayed')">Order Delay</button>
     </div>
-    <div class="chat-input">
-      <input type="text" id="user-input" placeholder="Type your message..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
   </div>
 
   <script>
     function setQuickMessage(msg) {
-      document.getElementById("user-input").value = msg;
+      $("#user-input").val(msg);
     }
 
-    async function sendMessage() {
-      let input = document.getElementById("user-input");
-      let message = input.value.trim();
-      if (!message) return;
+    function sendMessage() {
+      var userInput = $("#user-input").val().trim();
+      if (!userInput) return;
 
       // Add user message to chat box
-      document.getElementById("chat-box").innerHTML += `<div class="user-msg">${message}</div>`;
-      input.value = "";
+      $("#chat-messages").append("<p>You: " + userInput + "</p>");
 
       // Send to Flask backend
-      const res = await fetch("/get", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ msg: message })
+      $.ajax({
+        url: '/get',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({msg: userInput}),
+        success: function(response) {
+          // Add bot response to chat box
+          $("#chat-messages").append("<p>Bot: " + response.response + "</p>");
+          $("#user-input").val('');
+          $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+        }
       });
-      const data = await res.json();
-
-      // Add bot response to chat box
-      document.getElementById("chat-box").innerHTML += `<div class="bot-msg">${data.response}</div>`;
-      document.getElementById("chat-box").scrollTop = document.getElementById("chat-box").scrollHeight;
     }
   </script>
 </body>

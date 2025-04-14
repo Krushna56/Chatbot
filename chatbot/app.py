@@ -1,10 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
+import joblib
 
-from chatbot_train import model
-
-# Load trained chatbot model
-model = joblib.load(r"C:\Users\krush\Desktop\Internship\FUTURE_ML_03\chatbot\chatbot_model.pkl")
+# Load trained chatbot model and vectorizer
+try:
+    model = joblib.load('model.joblib')
+    vectorizer = joblib.load('vectorizer.joblib')
+except Exception as e:
+    print(f"Error loading model or vectorizer: {e}")
+    raise
 
 app = Flask(__name__)
 
@@ -15,7 +19,9 @@ def home():
 @app.route("/get", methods=["POST"])
 def get_bot_response():
     user_input = request.json["msg"]
-    response = model.predict([user_input])[0]
+    # Vectorize the input text
+    input_vectorized = vectorizer.transform([user_input])
+    response = model.predict(input_vectorized)[0]
     return jsonify({"response": response})
 
 if __name__ == "__main__":
