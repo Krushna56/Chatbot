@@ -1,7 +1,7 @@
 import json
 import random
 import numpy as np
-import nltk # type: ignore
+import nltk
 from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
